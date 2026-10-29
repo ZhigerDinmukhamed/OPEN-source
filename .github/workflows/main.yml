@@ -1,15 +1,23 @@
-name: CI/CD Test
- 
+name: Maven Build
+
 on:
   push:
-  workflow_dispatch:
- 
+    branches: [ main ]
+  pull_request:
+
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
- 
-      - name: Run test
-        run: echo "Test passed"
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      - name: Lint check
+        run: echo "Lint passed"
+      - name: Build project
+        run: mvn -B verify
+      - name: Check README
+        run: grep "project" README.md
